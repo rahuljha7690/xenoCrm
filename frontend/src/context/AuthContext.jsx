@@ -5,13 +5,16 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [checking, setChecking] = useState(true); // 🔄 loading state
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get('/auth/me'); // you'll create this route
+      const res = await axios.get('/auth/me');
       setUser(res.data);
     } catch {
       setUser(null);
+    } finally {
+      setChecking(false);
     }
   };
 
@@ -20,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, fetchUser }}>
+    <AuthContext.Provider value={{ user, setUser, checking }}>
       {children}
     </AuthContext.Provider>
   );
